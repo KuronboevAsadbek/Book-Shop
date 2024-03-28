@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bookshop
+    username: admin
+    password: 1
+  jpa:
+    properties:
+      hibernate:
+        show_format: true
+    #        show_sql: true
+    #        generate_statistics: true
+    hibernate:
+      ddl-auto: update
+jwt:
+  token:
+    secret: ZG9uaWtJbnRlcm5Qcm9qZWN0IDI2LjAyLjIwMjQ=
+    validity: 86400000
+
+
+server:
+  port: 8585
+  error:
+    include-message: always
+
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+    context-path: /api
+
+upload:
+  folder: root/ProjectFiles
+
+
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    tags-sorter: alpha
+    display-request-duration: true
+    operations-sorter: method
+    path: /docs
+    default-models-expand-depth: -1
