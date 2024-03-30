@@ -2,6 +2,8 @@ package uz.bookshop.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uz.bookshop.domain.dto.request_dto.BookRequestDTO;
 import uz.bookshop.domain.dto.response_dto.BookResponseDTO;
@@ -57,6 +59,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+//    @Cacheable(value = "book")
     @Override
     public BookResponseDTO getBook(Long id) {
         try {

@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class UserPurchases extends DateAudit implements Serializable {
+public class Cart extends DateAudit implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

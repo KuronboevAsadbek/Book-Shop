@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
                         .build()
                 );
     }
+
     @ExceptionHandler(BookException.class)
     @ResponseBody
     public ResponseEntity<Object> handleBookException(BookException bookException) {
@@ -32,6 +33,7 @@ public class GlobalExceptionHandler {
                         .build()
                 );
     }
+
     @ExceptionHandler(CommentException.class)
     @ResponseBody
     public ResponseEntity<Object> handleCommentException(CommentException commentException) {
@@ -44,7 +46,16 @@ public class GlobalExceptionHandler {
                 );
     }
 
-
+    @ExceptionHandler(CartException.class)
+    public ResponseEntity<Object> handleCartException(CartException cartException) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse
+                        .builder()
+                        .message(cartException.getMessage())
+                        .build()
+                );
+    }
 
 
     @Getter

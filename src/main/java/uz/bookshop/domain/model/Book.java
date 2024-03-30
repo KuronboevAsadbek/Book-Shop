@@ -29,6 +29,9 @@ public class Book extends DateAudit implements Serializable {
     @Column(name = "price")
     private BigInteger price;
 
+    @Column(name = "quantity")
+    private Integer quantity;
+
     @Column(name = "user_id")
     private Long userId;
 }

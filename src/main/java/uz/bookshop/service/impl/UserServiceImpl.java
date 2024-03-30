@@ -2,6 +2,7 @@ package uz.bookshop.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginVM.getUserName().trim().toLowerCase(), loginVM.getPassword()));
         return jwtTokenProvider.createToken(user.getUsername().trim().toLowerCase(), loginVM.isRememberMe());
     }
+
 
     @Override
     public UserResponseDTO createUser(UserRequestDto userRequestDto) {

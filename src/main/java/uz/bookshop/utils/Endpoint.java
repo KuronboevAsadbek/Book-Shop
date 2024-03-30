@@ -17,6 +17,10 @@ public class Endpoint {
     public static final String BOOK = "/book";
     public static final String CREATE = "/create";
     public static final String DELETE = "/delete/{id}";
+    public static final String DELETE_CART = "/delete";
     public static final String GET_ONE = "/getOne/{id}";
-    public static final String GET_ALL ="/getall";
+    public static final String GET_ALL = "/getall";
+    public static final String ADD = "/add";
+    public static final String CART = "/cart";
+    public static final String OPEN = "/open";
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import uz.bookshop.domain.dto.request_dto.CommentRequestDTO;
 import uz.bookshop.domain.dto.response_dto.BookResponseDTO;
@@ -47,18 +49,16 @@ public class CommentServiceImpl implements CommentService {
                     new BookException("Book not found"));
             Comment comment = commentMapper.toEntity(commentRequestDTO);
             comment.setUserId(user.getId());
-            commentRepository.save(comment);
+            comment = commentRepository.save(comment);
             commentResponseDTO = commentMapper.toDto(comment);
-            commentResponseDTO.setBook(bookMapper.toDto(book));
             log.info("Comment added successfully");
+            evictCacheForComments(commentRequestDTO.getBookId());
             return commentResponseDTO;
 
         } catch (Exception e) {
             log.error("Error in adding comment {}", e.getMessage());
             throw new CommentException("Error in adding comment");
         }
-
-
     }
 
     @Override
@@ -87,6 +87,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
+    @Cacheable(value = "comments", key = "#id")
     public List<CommentResponseDTO> getAllComments(Long id) {
         try {
             String sql = ("""
@@ -112,7 +113,7 @@ public class CommentServiceImpl implements CommentService {
                 CommentResponseDTO commentResponseDTO = getCommentResponseDTO(row);
                 commentResponseDTOS.add(commentResponseDTO);
             }
-
+            log.info("... Response information from Database ...");
             return commentResponseDTOS;
         } catch (Exception e) {
             log.error("Error getting comments {}", e.getMessage());
@@ -157,5 +158,10 @@ public class CommentServiceImpl implements CommentService {
             throw new CommentException("Error deleting comment");
         }
 
+    }
+
+    @CacheEvict(value = "comments", key = "#bookId")
+    public void evictCacheForComments(Long bookId) {
+        log.info("Cache for comments with bookId={} is evicted", bookId);
     }
 }

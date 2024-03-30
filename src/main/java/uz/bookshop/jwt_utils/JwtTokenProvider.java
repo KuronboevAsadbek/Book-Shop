@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -116,6 +117,14 @@ public class JwtTokenProvider {
 
     private String getUser(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public static String getCurrentUser(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public Long getCurrentUserId(){
+        return userRepository.findByUsername(getCurrentUser()).getId();
     }
 
 

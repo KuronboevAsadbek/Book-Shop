@@ -1,4 +1,4 @@
-package uz.bookshop.domain.dto.response_dto;
+package uz.bookshop.domain.dto.request_dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPurchasesResponseDTO {
+public class CartRequestDTO {
 
-    
+    private Long bookId;
 
-    private String bookName;
-
-    private String message;
+    private Integer quantity;
 
 }

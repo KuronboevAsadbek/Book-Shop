@@ -26,4 +26,5 @@ public interface EntityMapping<E, RQ, RS> {
     Set<RS> toDto(Set<E> eSet);
 
 
+
 }

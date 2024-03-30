@@ -11,6 +11,10 @@ spring:
     #        generate_statistics: true
     hibernate:
       ddl-auto: update
+  data:
+     redis:
+      host: localhost
+      port: 6379
 jwt:
   token:
     secret: ZG9uaWtJbnRlcm5Qcm9qZWN0IDI2LjAyLjIwMjQ=
