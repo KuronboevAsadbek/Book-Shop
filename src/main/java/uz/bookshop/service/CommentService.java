@@ -2,7 +2,7 @@ package uz.bookshop.service;
 
 import uz.bookshop.domain.dto.request_dto.CommentRequestDTO;
 import uz.bookshop.domain.dto.response_dto.CommentResponseDTO;
-import uz.bookshop.domain.dto.response_dto.DeleteResponse;
+import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 
 import java.security.Principal;
 import java.util.List;
@@ -15,6 +15,6 @@ public interface CommentService {
 
     List<CommentResponseDTO> getAllComments(Long id);
 
-    DeleteResponse deleteComment(Long id, Principal principal);
+    ResponseDTO deleteComment(Long id, Principal principal);
 
 }

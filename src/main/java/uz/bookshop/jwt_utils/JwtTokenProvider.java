@@ -119,11 +119,11 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public static String getCurrentUser(){
+    public String getCurrentUser() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public Long getCurrentUserId(){
+    public Long getCurrentUserId() {
         return userRepository.findByUsername(getCurrentUser()).getId();
     }
 

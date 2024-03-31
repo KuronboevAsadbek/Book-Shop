@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import uz.bookshop.domain.model.User;
 import uz.bookshop.repository.UserRepository;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,9 @@ public class CustomUserDetailServiceImpl implements UserDetailsService {
         User user = userRepository.findByUsername(username);
 
         return new UserDetails() {
+            @Serial
+            private static final long serialVersionUID = 1892212061235632245L;
+
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
                 return user.getRoles().stream().map(

@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.bookshop.domain.dto.request_dto.CommentRequestDTO;
 import uz.bookshop.domain.dto.response_dto.CommentResponseDTO;
-import uz.bookshop.domain.dto.response_dto.DeleteResponse;
+import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.service.CommentService;
 
 import java.security.Principal;
@@ -30,7 +30,7 @@ public class CommentController {
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @GetMapping(GET_ALL)
-    public ResponseEntity<List<CommentResponseDTO>> getAllCommentByBookId(@RequestParam Long bookId){
+    public ResponseEntity<List<CommentResponseDTO>> getAllCommentByBookId(@RequestParam Long bookId) {
         return ResponseEntity.ok(commentService.getAllComments(bookId));
     }
 
@@ -38,13 +38,13 @@ public class CommentController {
     @PutMapping(UPDATE)
     public ResponseEntity<CommentResponseDTO> editComment(@RequestParam Long id,
                                                           @RequestBody CommentRequestDTO commentRequestDTO,
-                                                          Principal principal){
+                                                          Principal principal) {
         return ResponseEntity.ok(commentService.editComment(id, commentRequestDTO, principal));
     }
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @DeleteMapping(DELETE)
-    public ResponseEntity<DeleteResponse> deleteComment(@PathVariable Long id, Principal principal){
+    public ResponseEntity<ResponseDTO> deleteComment(@PathVariable Long id, Principal principal) {
         return ResponseEntity.ok(commentService.deleteComment(id, principal));
     }
 }

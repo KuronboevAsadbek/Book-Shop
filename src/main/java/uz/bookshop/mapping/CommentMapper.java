@@ -6,5 +6,5 @@ import uz.bookshop.domain.dto.response_dto.CommentResponseDTO;
 import uz.bookshop.domain.model.Comment;
 
 @Mapper(componentModel = "spring")
-public interface CommentMapper extends EntityMapping<Comment, CommentRequestDTO, CommentResponseDTO>  {
+public interface CommentMapper extends EntityMapping<Comment, CommentRequestDTO, CommentResponseDTO> {
 }

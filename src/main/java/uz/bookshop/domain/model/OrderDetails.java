@@ -10,6 +10,7 @@ import uz.bookshop.domain.audit.DateAudit;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -17,22 +18,23 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Cart extends DateAudit implements Serializable {
-
+public class OrderDetails extends DateAudit implements Serializable {
     @Serial
-    private static final long serialVersionUID = -1949685906633907081L;
+    private static final long serialVersionUID = 2074254117720254871L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
+
 
     @Column(name = "book_id")
     private Long bookId;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "price")
+    private BigInteger price;
 
 
 }

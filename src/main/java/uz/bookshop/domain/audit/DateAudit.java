@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 
@@ -18,6 +19,8 @@ import java.time.Instant;
         allowGetters = true
 )
 public abstract class DateAudit implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5680544693532110285L;
     @CreatedDate
     @Column(updatable = false)
     @CurrentTimestamp

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.bookshop.VM.LoginVM;
+import uz.bookshop.controller.admin_controller.VM.LoginVM;
 import uz.bookshop.domain.dto.request_dto.UserRequestDto;
 import uz.bookshop.domain.dto.response_dto.RoleResponseDTO;
 import uz.bookshop.domain.dto.response_dto.UserResponseDTO;
@@ -54,7 +54,6 @@ public class UserJwtController {
     public ResponseEntity<?> refreshToken(@RequestParam("refreshToken") String refreshToken) {
         return ResponseEntity.ok(jwtTokenProvider.refreshToken(refreshToken));
     }
-
 
 
     @PutMapping(UPDATE)

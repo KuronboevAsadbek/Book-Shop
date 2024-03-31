@@ -2,7 +2,7 @@ package uz.bookshop.service;
 
 import uz.bookshop.domain.dto.request_dto.CartRequestDTO;
 import uz.bookshop.domain.dto.response_dto.CartResponseDTO;
-import uz.bookshop.domain.dto.response_dto.DeleteResponse;
+import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public interface CartService {
 
     List<CartResponseDTO> openBasket();
 
-    DeleteResponse deleteCarts();
+    ResponseDTO deleteCarts();
 
-    DeleteResponse deleteOneCart(Long id);
+    ResponseDTO deleteOneCart(Long id);
 
 
 }

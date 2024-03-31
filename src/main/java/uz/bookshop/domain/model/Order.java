@@ -10,29 +10,37 @@ import uz.bookshop.domain.audit.DateAudit;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Cart extends DateAudit implements Serializable {
+public class Order extends DateAudit implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = -1949685906633907081L;
+    private static final long serialVersionUID = -5059296754431460136L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "book_id")
-    private Long bookId;
-
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "quantity")
-    private Integer quantity;
+    @Column(name = "total_amount")
+    private BigInteger totalAmount;
+
+    @Column(name = "status")
+    private Boolean status;
+
+    //i need relaiton with orderDetials
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<OrderDetails> orderDetails;
 
 
 }

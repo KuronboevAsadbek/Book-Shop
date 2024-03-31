@@ -1,4 +1,4 @@
-package uz.bookshop.VM;
+package uz.bookshop.controller.admin_controller.VM;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

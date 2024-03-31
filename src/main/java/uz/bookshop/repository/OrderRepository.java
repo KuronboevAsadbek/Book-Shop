@@ -2,8 +2,8 @@ package uz.bookshop.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import uz.bookshop.domain.model.Book;
+import uz.bookshop.domain.model.Order;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 }

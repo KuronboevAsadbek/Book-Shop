@@ -1,7 +1,7 @@
 package uz.bookshop.service;
 
 
-import uz.bookshop.VM.LoginVM;
+import uz.bookshop.controller.admin_controller.VM.LoginVM;
 import uz.bookshop.domain.dto.request_dto.UserRequestDto;
 import uz.bookshop.domain.dto.response_dto.LoginResponseDTO;
 import uz.bookshop.domain.dto.response_dto.UserResponseDTO;

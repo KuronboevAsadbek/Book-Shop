@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import uz.bookshop.domain.dto.request_dto.CommentRequestDTO;
 import uz.bookshop.domain.dto.response_dto.BookResponseDTO;
 import uz.bookshop.domain.dto.response_dto.CommentResponseDTO;
-import uz.bookshop.domain.dto.response_dto.DeleteResponse;
+import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.domain.model.Book;
 import uz.bookshop.domain.model.Comment;
 import uz.bookshop.domain.model.User;
@@ -39,6 +39,22 @@ public class CommentServiceImpl implements CommentService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final EntityManager entityManager;
+
+    private static CommentResponseDTO getCommentResponseDTO(Object[] row) {
+        Long commentId = (Long) row[0];
+        String commentText = (String) row[1];
+        Instant instant = (Instant) row[2];
+        String createdBy = (String) row[3];
+        Long bookId = (Long) row[4];
+        String bookName = (String) row[5];
+        String authorName = (String) row[6];
+        String authorSurname = (String) row[7];
+
+        String createdAt = instant.toString();
+
+        BookResponseDTO bookResponseDTO = new BookResponseDTO(bookId, bookName, null, authorName, authorSurname);
+        return new CommentResponseDTO(commentId, commentText, bookResponseDTO, createdAt, createdBy);
+    }
 
     @Override
     public CommentResponseDTO addComment(CommentRequestDTO commentRequestDTO, Principal principal) {
@@ -85,7 +101,6 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-
     @Override
     @Cacheable(value = "comments", key = "#id")
     public List<CommentResponseDTO> getAllComments(Long id) {
@@ -121,34 +136,18 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-    private static CommentResponseDTO getCommentResponseDTO(Object[] row) {
-        Long commentId = (Long) row[0];
-        String commentText = (String) row[1];
-        Instant instant = (Instant) row[2];
-        String createdBy = (String) row[3];
-        Long bookId = (Long) row[4];
-        String bookName = (String) row[5];
-        String authorName = (String) row[6];
-        String authorSurname = (String) row[7];
-
-        String createdAt = instant.toString();
-
-        BookResponseDTO bookResponseDTO = new BookResponseDTO(bookId, bookName, null, authorName, authorSurname);
-        return new CommentResponseDTO(commentId, commentText, bookResponseDTO, createdAt, createdBy);
-    }
-
     @Override
-    public DeleteResponse deleteComment(Long id, Principal principal) {
+    public ResponseDTO deleteComment(Long id, Principal principal) {
         try {
-            DeleteResponse deleteResponse = new DeleteResponse();
+            ResponseDTO responseDTO = new ResponseDTO();
             Comment comment = commentRepository.findById(id).orElseThrow(() ->
                     new CommentException("Comment not found"));
             User user = userRepository.findByUsername(principal.getName());
             if (comment.getUserId().equals(user.getId())) {
                 commentRepository.delete(comment);
-                deleteResponse.setMessage("Comment deleted successfully");
+                responseDTO.setMessage("Comment deleted successfully");
                 log.info("Comment deleted successfully");
-                return deleteResponse;
+                return responseDTO;
             } else {
                 log.error("You can't delete this comment");
                 throw new CommentException("You can't delete this comment");

@@ -23,4 +23,5 @@ public class Endpoint {
     public static final String ADD = "/add";
     public static final String CART = "/cart";
     public static final String OPEN = "/open";
+    public static final String ORDER = "/order";
 }

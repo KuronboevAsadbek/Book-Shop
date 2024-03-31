@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.bookshop.domain.dto.request_dto.CartRequestDTO;
 import uz.bookshop.domain.dto.response_dto.CartResponseDTO;
-import uz.bookshop.domain.dto.response_dto.DeleteResponse;
+import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.service.CartService;
 
 import static uz.bookshop.utils.Endpoint.*;
@@ -30,8 +30,9 @@ public class CartController {
         return ResponseEntity.ok(cartService.openBasket());
 
     }
+
     @DeleteMapping(DELETE_CART)
-    public ResponseEntity<DeleteResponse> deleteFromBasket() {
+    public ResponseEntity<ResponseDTO> deleteFromBasket() {
         return ResponseEntity.ok(cartService.deleteCarts());
     }
 

@@ -5,10 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigInteger;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteResponse {
-    private String message;
+public class OrderDetailsResponseDTO {
+
+    private Long id;
+    private BookResponseDTO book;
+    private Integer quantity;
+    private BigInteger price;
 }
