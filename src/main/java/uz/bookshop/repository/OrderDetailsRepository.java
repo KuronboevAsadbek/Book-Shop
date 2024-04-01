@@ -13,10 +13,10 @@ import java.util.List;
 public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long> {
 
 
-    @Query(value = "SELECT o FROM order_details o WHERE o.created_by=:username", nativeQuery = true)
-    List<OrderDetails> getAllByUserName(String username);
-//
-//
+//    @Query(value = "SELECT o FROM order_details o WHERE o.created_by=:username", nativeQuery = true)
+//    List<OrderDetails> getAllByUserName(String username);
+
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE order_details SET order_id=:orderId WHERE order_details.created_by=:username", nativeQuery = true)

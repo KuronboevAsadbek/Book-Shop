@@ -31,7 +31,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     private final OrderDetailsRepository orderDetailsRepository;
     private final UserRepository userRepository;
-    private final CartRepository cartRepository;
+
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final CartServiceImp cartServiceImp;

@@ -31,9 +31,8 @@ import java.util.Optional;
 @Slf4j
 public class CartServiceImp implements CartService {
 
-    private final CartRepository cartRepository;
+
     private final BookRepository bookRepository;
-    private final CartMapper cartMapper;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, Object> redisTemplate;
