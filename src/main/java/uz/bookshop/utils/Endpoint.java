@@ -22,6 +22,8 @@ public class Endpoint {
     public static final String GET_ALL = "/getall";
     public static final String ADD = "/add";
     public static final String CART = "/cart";
+    public static final String ADD_MINUST_OR_PLUS = "/addMinusOrPlus";
     public static final String OPEN = "/open";
     public static final String ORDER = "/order";
+    public static final String DELETE_ONE_CART = "/deleteOneCart/{id}";
 }

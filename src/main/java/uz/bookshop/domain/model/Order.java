@@ -37,10 +37,8 @@ public class Order extends DateAudit implements Serializable {
     @Column(name = "status")
     private Boolean status;
 
-    //i need relaiton with orderDetials
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<OrderDetails> orderDetails;
+
 
 
 }

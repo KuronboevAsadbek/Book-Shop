@@ -9,9 +9,7 @@ public interface OrderDetailsService {
 
     List<OrderDetailsResponseDTO> addOrderDetails(Long userId);
 
-    void deleteOrderDetails(Long id);
 
-    List<OrderDetails> getAllOrderDetails();
 
 
 }

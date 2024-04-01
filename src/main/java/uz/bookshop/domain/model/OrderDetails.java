@@ -36,5 +36,8 @@ public class OrderDetails extends DateAudit implements Serializable {
     @Column(name = "price")
     private BigInteger price;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
 
 }

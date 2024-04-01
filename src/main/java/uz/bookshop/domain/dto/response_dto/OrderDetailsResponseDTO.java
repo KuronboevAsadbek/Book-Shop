@@ -16,5 +16,5 @@ public class OrderDetailsResponseDTO {
     private Long id;
     private BookResponseDTO book;
     private Integer quantity;
-    private BigInteger price;
+    private BigInteger totalPrice;
 }
