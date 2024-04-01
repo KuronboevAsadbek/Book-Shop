@@ -3,7 +3,6 @@ package uz.bookshop.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uz.bookshop.domain.dto.response_dto.OrderDetailsResponseDTO;
 import uz.bookshop.domain.dto.response_dto.OrderResponseDTO;
 import uz.bookshop.domain.dto.response_dto.ResponseDTO;

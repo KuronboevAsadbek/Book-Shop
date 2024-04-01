@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import uz.bookshop.domain.dto.request_dto.CartRequestDTO;
 import uz.bookshop.domain.dto.request_dto.PlusMinusRequest;
-import uz.bookshop.domain.dto.response_dto.CartResponseDTO;
 import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.service.CartService;
 
