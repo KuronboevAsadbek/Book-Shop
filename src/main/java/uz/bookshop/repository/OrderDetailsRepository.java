@@ -7,8 +7,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uz.bookshop.domain.model.OrderDetails;
 
-import java.util.List;
-
 @Repository
 public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Long> {
 

@@ -14,9 +14,7 @@ import uz.bookshop.domain.model.Cart;
 import uz.bookshop.domain.model.User;
 import uz.bookshop.exception.CartException;
 import uz.bookshop.jwt_utils.JwtTokenProvider;
-import uz.bookshop.mapping.CartMapper;
 import uz.bookshop.repository.BookRepository;
-import uz.bookshop.repository.CartRepository;
 import uz.bookshop.repository.UserRepository;
 import uz.bookshop.service.CartService;
 

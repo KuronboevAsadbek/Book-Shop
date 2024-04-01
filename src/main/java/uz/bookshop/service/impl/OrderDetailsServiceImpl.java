@@ -15,7 +15,6 @@ import uz.bookshop.exception.UserException;
 import uz.bookshop.jwt_utils.JwtTokenProvider;
 import uz.bookshop.mapping.BookMapper;
 import uz.bookshop.repository.BookRepository;
-import uz.bookshop.repository.CartRepository;
 import uz.bookshop.repository.OrderDetailsRepository;
 import uz.bookshop.repository.UserRepository;
 import uz.bookshop.service.OrderDetailsService;
