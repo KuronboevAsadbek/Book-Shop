@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.bookshop.domain.dto.request_dto.RoleRequestDTO;
 import uz.bookshop.domain.dto.request_dto.UserRequestDto;
 import uz.bookshop.domain.dto.response_dto.RoleResponseDTO;
@@ -36,5 +33,11 @@ public class AdminController {
     @PreAuthorize("hasAuthority('CAN_MANAGE_ROLES')")
     public ResponseEntity<RoleResponseDTO> addRole(@RequestBody RoleRequestDTO roleRequestDTO) {
         return ResponseEntity.ok(roleService.createRole(roleRequestDTO));
+    }
+
+    @PutMapping(UPDATE_USER)
+    @PreAuthorize("hasAuthority('CAN_MANAGE_USERS')")
+    public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UserRequestDto userRequestDto, Long id) {
+        return ResponseEntity.ok(userService.updateUser(userRequestDto, id));
     }
 }

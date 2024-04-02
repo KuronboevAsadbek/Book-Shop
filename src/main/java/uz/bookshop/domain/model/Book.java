@@ -10,7 +10,6 @@ import uz.bookshop.domain.audit.DateAudit;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -30,7 +29,7 @@ public class Book extends DateAudit implements Serializable {
     private String name;
 
     @Column(name = "price")
-    private BigInteger price;
+    private Integer price;
 
     @Column(name = "quantity")
     private Integer quantity;

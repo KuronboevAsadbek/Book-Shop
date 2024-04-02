@@ -8,13 +8,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
+import java.io.Serial;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookRequestDTO {
+public class BookRequestDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -8964724010101867347L;
 
     @NotNull
     @JsonProperty("name")
@@ -22,7 +26,7 @@ public class BookRequestDTO {
 
     @NotNull
     @JsonProperty("price")
-    private BigInteger price;
+    private Integer price;
 
     @NotNull
     @JsonProperty("quantity")

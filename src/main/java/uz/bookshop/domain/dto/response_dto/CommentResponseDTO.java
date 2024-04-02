@@ -1,6 +1,5 @@
 package uz.bookshop.domain.dto.response_dto;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,7 @@ public class CommentResponseDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 7274043871477772215L;
 
-    @Id
+
     private Long id;
     private String text;
     private BookResponseDTO book;

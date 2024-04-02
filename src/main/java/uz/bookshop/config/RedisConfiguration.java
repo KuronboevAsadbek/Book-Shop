@@ -22,7 +22,7 @@ import java.time.Duration;
         },
         enableKeyspaceEvents
                 = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
-public class RedisConfiguration implements CachingConfigurer {
+public class RedisConfiguration<T> implements CachingConfigurer {
 
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
@@ -36,8 +36,8 @@ public class RedisConfiguration implements CachingConfigurer {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        final RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, T> redisTemplate(RedisConnectionFactory connectionFactory) {
+        final RedisTemplate<String, T> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());

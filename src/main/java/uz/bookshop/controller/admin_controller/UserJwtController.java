@@ -58,6 +58,13 @@ public class UserJwtController {
 
     @PutMapping(UPDATE)
     public ResponseEntity<UserResponseDTO> updateUser(@RequestBody UserRequestDto userRequestDto, Long id) {
+        userRequestDto.setRoles(
+                Set.of(
+                        RoleResponseDTO.builder()
+                                .id(9L)
+                                .build()
+                )
+        );
         return ResponseEntity.ok(userService.updateUser(userRequestDto, id));
     }
 }

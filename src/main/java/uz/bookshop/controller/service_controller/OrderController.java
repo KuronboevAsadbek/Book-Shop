@@ -1,5 +1,6 @@
 package uz.bookshop.controller.service_controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +19,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping(CREATE)
-    public ResponseEntity<OrderResponseDTO> createOrder() {
-        return ResponseEntity.ok(orderService.createOrder());
+    public ResponseEntity<OrderResponseDTO> createOrder(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(orderService.createOrder(httpServletRequest));
     }
 }
 

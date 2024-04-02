@@ -63,11 +63,18 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UserException(("Password is too short!"));
         }
+
         userMapper.updateFromDto(userRequestDto, user);
         user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         user.setUsername(userRequestDto.getUsername().trim().toLowerCase());
         userResponseDto = userMapper.toDto(user);
+        userRepository.save(user);
         return userResponseDto;
+    }
+
+    @Override
+    public UserResponseDTO updateUserByAdmin(UserRequestDto userRequestDto, Long userId) {
+        return null;
     }
 
     @Override

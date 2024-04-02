@@ -11,11 +11,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderResponseDTO {
+public class Total {
 
-    private Long id;
-    private Long userId;
-    private Integer totalAmount;
-    private Boolean status;
-    private List<OrderDetailsResponseDTO> orderDetails;
+    private Integer totalAmountAllBooks;
+    private List<CartResponseDTO> carts;
+
 }

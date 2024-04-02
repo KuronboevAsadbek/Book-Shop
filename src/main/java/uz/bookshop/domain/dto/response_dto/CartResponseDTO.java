@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,8 +15,9 @@ public class CartResponseDTO {
     private Long bookId;
     private String authorName;
     private Integer quantity;
-    private BigInteger amount;
-    private BigInteger totalAmount;
+    private Integer amount;
+    private Integer totalAmount;
     private Integer available;
+
 
 }

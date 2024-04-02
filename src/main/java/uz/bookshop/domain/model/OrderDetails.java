@@ -10,7 +10,6 @@ import uz.bookshop.domain.audit.DateAudit;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -34,10 +33,14 @@ public class OrderDetails extends DateAudit implements Serializable {
     private Integer quantity;
 
     @Column(name = "price")
-    private BigInteger price;
+    private Integer price;
 
     @Column(name = "order_id")
     private Long orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
 
 }

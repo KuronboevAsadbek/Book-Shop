@@ -1,5 +1,6 @@
 package uz.bookshop.controller.service_controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.bookshop.domain.dto.request_dto.CartRequestDTO;
 import uz.bookshop.domain.dto.request_dto.PlusMinusRequest;
 import uz.bookshop.domain.dto.response_dto.ResponseDTO;
+import uz.bookshop.domain.dto.response_dto.Total;
 import uz.bookshop.service.CartService;
 
 import static uz.bookshop.utils.Endpoint.*;
@@ -20,31 +22,33 @@ public class CartController {
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @PostMapping(ADD)
-    public ResponseEntity<ResponseDTO> addToBasket(@RequestBody CartRequestDTO cartRequestDTO) {
-        return ResponseEntity.ok(cartService.addToBasket(cartRequestDTO));
+    public ResponseEntity<ResponseDTO> addToBasket(@RequestBody CartRequestDTO cartRequestDTO,
+                                                   HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(cartService.addToBasket(cartRequestDTO, httpServletRequest));
     }
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @GetMapping(OPEN)
-    public ResponseEntity<?> openBasket() {
-        return ResponseEntity.ok(cartService.openBasket());
+    public ResponseEntity<Total> openBasket(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(cartService.openBasket(httpServletRequest));
 
     }
 
     @DeleteMapping(DELETE_CART)
-    public ResponseEntity<ResponseDTO> deleteFromBasket() {
-        return ResponseEntity.ok(cartService.deleteCarts());
+    public ResponseEntity<ResponseDTO> deleteFromBasket(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(cartService.deleteCarts(httpServletRequest));
     }
 
-    @PutMapping(ADD_MINUST_OR_PLUS)
-    public ResponseEntity<?> addOneOrMinusOne(@RequestBody PlusMinusRequest plusMinusRequest) {
-        cartService.addOneOrMinusOne(plusMinusRequest);
+    @PutMapping(ADD_MINUS_OR_PLUS)
+    public ResponseEntity<?> addOneOrMinusOne(@RequestBody PlusMinusRequest plusMinusRequest,
+                                              HttpServletRequest httpServletRequest) {
+        cartService.addOneOrMinusOne(plusMinusRequest, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(DELETE_ONE_CART)
-    public ResponseEntity<ResponseDTO> deleteOneCart(@PathVariable Long id) {
-        return ResponseEntity.ok(cartService.deleteOneCart(id));
+    public ResponseEntity<ResponseDTO> deleteOneCart(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(cartService.deleteOneCart(id, httpServletRequest));
     }
 
 }

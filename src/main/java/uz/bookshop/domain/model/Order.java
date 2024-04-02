@@ -10,7 +10,6 @@ import uz.bookshop.domain.audit.DateAudit;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigInteger;
 
 @Getter
 @Setter
@@ -31,13 +30,10 @@ public class Order extends DateAudit implements Serializable {
     private Long userId;
 
     @Column(name = "total_amount")
-    private BigInteger totalAmount;
+    private Integer totalAmount;
 
     @Column(name = "status")
     private Boolean status;
-
-
-
 
 
 }

@@ -13,6 +13,8 @@ public interface UserService {
 
     UserResponseDTO updateUser(UserRequestDto userRequestDto, Long userId);
 
+    UserResponseDTO updateUserByAdmin(UserRequestDto userRequestDto, Long userId);
+
     Boolean checkUserName(String userName);
 
     Boolean checkPassword(String password);

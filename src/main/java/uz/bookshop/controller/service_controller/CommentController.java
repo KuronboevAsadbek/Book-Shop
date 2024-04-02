@@ -1,5 +1,6 @@
 package uz.bookshop.controller.service_controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,7 +10,6 @@ import uz.bookshop.domain.dto.response_dto.CommentResponseDTO;
 import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.service.CommentService;
 
-import java.security.Principal;
 import java.util.List;
 
 import static uz.bookshop.utils.Endpoint.*;
@@ -24,27 +24,29 @@ public class CommentController {
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @PostMapping(CREATE)
-    public ResponseEntity<CommentResponseDTO> addComment(CommentRequestDTO commentRequestDTO, Principal principal) {
-        return ResponseEntity.ok(commentService.addComment(commentRequestDTO, principal));
+    public ResponseEntity<CommentResponseDTO> addComment(@RequestBody CommentRequestDTO commentRequestDTO,
+                                                         HttpServletRequest servletRequest) {
+        return ResponseEntity.ok(commentService.addComment(commentRequestDTO, servletRequest));
     }
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @GetMapping(GET_ALL)
-    public ResponseEntity<List<CommentResponseDTO>> getAllCommentByBookId(@RequestParam Long bookId) {
-        return ResponseEntity.ok(commentService.getAllComments(bookId));
+    public ResponseEntity<List<CommentResponseDTO>> getAllCommentByBookId(@RequestParam Long bookId,
+                                                                          HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(commentService.getAllComments(bookId, httpServletRequest));
     }
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @PutMapping(UPDATE)
     public ResponseEntity<CommentResponseDTO> editComment(@RequestParam Long id,
                                                           @RequestBody CommentRequestDTO commentRequestDTO,
-                                                          Principal principal) {
-        return ResponseEntity.ok(commentService.editComment(id, commentRequestDTO, principal));
+                                                          HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(commentService.editComment(id, commentRequestDTO, httpServletRequest));
     }
 
     @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
     @DeleteMapping(DELETE)
-    public ResponseEntity<ResponseDTO> deleteComment(@PathVariable Long id, Principal principal) {
-        return ResponseEntity.ok(commentService.deleteComment(id, principal));
+    public ResponseEntity<ResponseDTO> deleteComment(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(commentService.deleteComment(id, httpServletRequest));
     }
 }

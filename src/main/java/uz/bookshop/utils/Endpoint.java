@@ -14,6 +14,7 @@ public class Endpoint {
     public static final String REFRESH_TOKEN = "/refreshToken";
     public static final String UPDATE = "/update";
     public static final String ADD_ROLE = "/addRole";
+    public static final String UPDATE_USER = "/updateUser";
     public static final String BOOK = "/book";
     public static final String CREATE = "/create";
     public static final String DELETE = "/delete/{id}";
@@ -22,7 +23,7 @@ public class Endpoint {
     public static final String GET_ALL = "/getall";
     public static final String ADD = "/add";
     public static final String CART = "/cart";
-    public static final String ADD_MINUST_OR_PLUS = "/addMinusOrPlus";
+    public static final String ADD_MINUS_OR_PLUS = "/addMinusOrPlus";
     public static final String OPEN = "/open";
     public static final String ORDER = "/order";
     public static final String DELETE_ONE_CART = "/deleteOneCart/{id}";
