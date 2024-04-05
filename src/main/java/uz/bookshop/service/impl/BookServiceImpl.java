@@ -2,7 +2,6 @@ package uz.bookshop.service.impl;
 
 import com.google.gson.Gson;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +13,12 @@ import uz.bookshop.domain.dto.request_dto.BookRequestDTO;
 import uz.bookshop.domain.dto.response_dto.BookResponseDTO;
 import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.domain.model.Book;
-import uz.bookshop.domain.model.User;
 import uz.bookshop.exception.BookException;
 import uz.bookshop.jwt_utils.JwtTokenProvider;
 import uz.bookshop.mapping.BookMapper;
 import uz.bookshop.repository.BookRepository;
 import uz.bookshop.repository.UserRepository;
 import uz.bookshop.service.BookService;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,22 +46,21 @@ public class BookServiceImpl implements BookService {
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             BookResponseDTO bookResponseDTO;
-            User user = userRepository.findByUsername(jwtTokenProvider.getCurrentUser());
+//            User user = userRepository.findByUsername(JwtTokenProvider.getCurrentUser());
             Book book = bookMapper.toEntity(bookRequestDTO);
 //            book.setPrice(book.getPrice().multiply(BigInteger.valueOf(1000)));
             Book book2 = bookRepository.findByName(book.getName());
-            book.setUserId(user.getId());
+//            book.setUserId(user.getId());
             if (book2 != null) {
-                if (book.getName().equals(book2.getName()) && book2.getUserId().equals(
-                        jwtTokenProvider.getCurrentUserId())) {
+                if (book.getName().equals(book2.getName())) {
                     LOG.error("Book already exists update it \t\t {}", gson.toJson(bookRequestDTO));
                     throw new BookException("Book already exists update it");
                 }
             }
             book = bookRepository.save(book);
             bookResponseDTO = bookMapper.toDto(book);
-            bookResponseDTO.setAuthorName(user.getFirstName());
-            bookResponseDTO.setAuthorSurname(user.getLastName());
+            bookResponseDTO.setWriter(book.getWriter());
+//            bookResponseDTO.setAuthorSurname(user.getLastName());
             return bookResponseDTO;
         } catch (Exception e) {
             LOG.error("Error while creating book", e);
@@ -100,10 +95,10 @@ public class BookServiceImpl implements BookService {
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             Book book = bookRepository.findById(id).orElseThrow(() -> new BookException("Book not found"));
-            User user = userRepository.findById(book.getUserId()).orElseThrow(() -> new BookException("User not found"));
+//            User user = userRepository.findById(book.getUserId()).orElseThrow(() -> new BookException("User not found"));
             BookResponseDTO bookResponseDTO = bookMapper.toDto(book);
-            bookResponseDTO.setAuthorName(user.getFirstName());
-            bookResponseDTO.setAuthorSurname(user.getLastName());
+            bookResponseDTO.setWriter(book.getName());
+//            bookResponseDTO.setAuthorSurname(user.getLastName());
             LOG.info("Getting Book \t\t {}", gson.toJson(bookResponseDTO));
             return bookResponseDTO;
         } catch (Exception e) {
@@ -120,42 +115,15 @@ public class BookServiceImpl implements BookService {
             String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
-
-            String sql = ("""
-                    SELECT b.id                 AS id,
-                           b.name               AS name,
-                           b.price              AS price,
-                           b.quantity           AS quantity,
-                           u.first_name         AS authorName,
-                           u.last_name          AS authorSurname
-                    FROM book b
-                    JOIN users u ON b.user_id = u.id
-                    """);
-
-            Query query = entityManager.createNativeQuery(sql);
-            List<Object[]> results = query.getResultList();
-
-            List<BookResponseDTO> bookResponseDTOs = new ArrayList<>();
-
-            for (Object[] result : results) {
-                BookResponseDTO bookResponseDTO = new BookResponseDTO();
-                bookResponseDTO.setId((Long) result[0]);
-                bookResponseDTO.setName((String) result[1]);
-                bookResponseDTO.setPrice((Integer) result[2]);
-                bookResponseDTO.setQuantity((Integer) result[3]);
-                bookResponseDTO.setAuthorName((String) result[4]);
-                bookResponseDTO.setAuthorSurname((String) result[5]);
-
-                bookResponseDTOs.add(bookResponseDTO);
-            }
-
-            LOG.info("Book updated \t\t {}", gson.toJson(bookResponseDTOs));
-            return bookResponseDTOs;
+            List<Book> books = bookRepository.findAll();
+            List<BookResponseDTO> bookResponseDTOS;
+            bookResponseDTOS = bookMapper.toDto(books);
+            return bookResponseDTOS;
         } catch (Exception e) {
             LOG.error("Error while getting all books", e);
             throw new BookException("Error while getting all books");
-        }
 
+        }
     }
 
     @Override
@@ -176,5 +144,22 @@ public class BookServiceImpl implements BookService {
             throw new BookException("Error while deleting book");
         }
 
+    }
+
+    @Override
+    public List<BookResponseDTO> getUserBooks(HttpServletRequest httpServletRequest) {
+        try {
+            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
+            LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
+            LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
+            List<Book> books = bookRepository.findByCreatedBy(JwtTokenProvider.getCurrentUser());
+            List<BookResponseDTO> bookResponseDTOS;
+            bookResponseDTOS = bookMapper.toDto(books);
+            return bookResponseDTOS;
+        } catch (Exception e) {
+            LOG.error("Error while getting user books", e);
+            throw new BookException("Error while getting user books");
+        }
     }
 }

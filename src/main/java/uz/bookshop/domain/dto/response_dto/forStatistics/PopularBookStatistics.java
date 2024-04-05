@@ -4,9 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.bookshop.domain.model.Book;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,5 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PopularBookStatistics {
 
-    private List<Book> popularBooks;
+    private String bookName;
+    private int totalQuantity;
 }

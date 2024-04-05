@@ -1,4 +1,4 @@
-package uz.bookshop.controller.admin_controller.VM;
+package uz.bookshop.domain.dto.request_dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LoginVM {
+public class LoginRequestDto {
 
     @NotNull
     private String userName;

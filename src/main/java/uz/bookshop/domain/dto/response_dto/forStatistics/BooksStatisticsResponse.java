@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BooksStatistics {
+public class BooksStatisticsResponse {
 
-    private int count;
-    private int countOfComment;
-    private int countOfView;
+    private String bookName;
+    private int orderCount;
+    private int commentCount;
 }

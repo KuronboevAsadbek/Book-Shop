@@ -35,8 +35,6 @@ public class OrderDetails extends DateAudit implements Serializable {
     @Column(name = "price")
     private Integer price;
 
-    @Column(name = "order_id")
-    private Long orderId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

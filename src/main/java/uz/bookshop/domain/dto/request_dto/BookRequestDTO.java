@@ -32,5 +32,9 @@ public class BookRequestDTO implements Serializable {
     @JsonProperty("quantity")
     private Integer quantity;
 
+    @NotNull
+    @JsonProperty("writer")
+    private String writer;
+
 
 }

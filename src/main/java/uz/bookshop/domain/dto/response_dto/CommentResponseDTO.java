@@ -21,7 +21,8 @@ public class CommentResponseDTO implements Serializable {
 
     private Long id;
     private String text;
-    private BookResponseDTO book;
+    private Long bookId;
+    private String bookName;
     private String createdAt;
     private String createdBy;
 }

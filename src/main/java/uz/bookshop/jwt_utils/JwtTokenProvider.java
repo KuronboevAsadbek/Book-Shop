@@ -38,6 +38,9 @@ public class JwtTokenProvider {
     @Value("${jwt.token.validity}")
     private long validityMilliSecond;
 
+    public static String getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @PostConstruct
     protected void init() {
@@ -117,10 +120,6 @@ public class JwtTokenProvider {
 
     private String getUser(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public String getCurrentUser() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     public Long getCurrentUserId() {

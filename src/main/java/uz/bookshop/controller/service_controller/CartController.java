@@ -20,25 +20,27 @@ public class CartController {
 
     private final CartService cartService;
 
-    @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @PostMapping(ADD)
     public ResponseEntity<ResponseDTO> addToBasket(@RequestBody CartRequestDTO cartRequestDTO,
                                                    HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(cartService.addToBasket(cartRequestDTO, httpServletRequest));
     }
 
-    @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @GetMapping(OPEN)
     public ResponseEntity<Total> openBasket(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(cartService.openBasket(httpServletRequest));
 
     }
 
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @DeleteMapping(DELETE_CART)
     public ResponseEntity<ResponseDTO> deleteFromBasket(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(cartService.deleteCarts(httpServletRequest));
     }
 
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @PutMapping(ADD_MINUS_OR_PLUS)
     public ResponseEntity<?> addOneOrMinusOne(@RequestBody PlusMinusRequest plusMinusRequest,
                                               HttpServletRequest httpServletRequest) {
@@ -46,6 +48,7 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @DeleteMapping(DELETE_ONE_CART)
     public ResponseEntity<ResponseDTO> deleteOneCart(@PathVariable Long id, HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(cartService.deleteOneCart(id, httpServletRequest));

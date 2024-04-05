@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ActiveUserStatistics {
 
     private String name;
-    private int count;
+    private int bookCount;
     private Integer totalAmount;
     private int commentCount;
 }

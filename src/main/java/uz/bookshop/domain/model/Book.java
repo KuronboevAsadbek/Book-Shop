@@ -34,6 +34,9 @@ public class Book extends DateAudit implements Serializable {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Column(name = "user_id")
-    private Long userId;
+    //    @Column(name = "user_id")
+//    private Long userId;
+//
+    @Column(name = "writer")
+    private String writer;
 }

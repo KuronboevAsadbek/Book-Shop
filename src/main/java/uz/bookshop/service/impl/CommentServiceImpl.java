@@ -27,7 +27,6 @@ import uz.bookshop.repository.CommentRepository;
 import uz.bookshop.repository.UserRepository;
 import uz.bookshop.service.CommentService;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,6 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final JwtTokenProvider jwtTokenProvider;
     private final EntityManager entityManager;
     private final Gson gson;
     private final NetworkDataService networkDataService;
@@ -50,18 +48,14 @@ public class CommentServiceImpl implements CommentService {
     private static CommentResponseDTO getCommentResponseDTO(Object[] row) {
         Long commentId = (Long) row[0];
         String commentText = (String) row[1];
-        Instant instant = (Instant) row[2];
-        String createdBy = (String) row[3];
-        Long bookId = (Long) row[4];
-        String bookName = (String) row[5];
-        String authorName = (String) row[6];
-        String authorSurname = (String) row[7];
+        Long bookId = (Long) row[3];
+        String bookName = (String) row[4];
+        String createdBy = (String) row[5];
+        String createdAt = row[2].toString();
 
 
-        String createdAt = instant.toString();
-
-        BookResponseDTO bookResponseDTO = new BookResponseDTO(bookId, bookName, null, null, authorName, authorSurname);
-        return new CommentResponseDTO(commentId, commentText, bookResponseDTO, createdAt, createdBy);
+        BookResponseDTO bookResponseDTO = new BookResponseDTO(bookId, bookName, null, null, createdBy);
+        return new CommentResponseDTO(commentId, commentText, bookId, bookName, createdAt, createdBy);
     }
 
     @Override
@@ -75,14 +69,15 @@ public class CommentServiceImpl implements CommentService {
             BookResponseDTO bookResponseDTO = bookMapper.toDto(bookRepository.findById(commentRequestDTO.getBookId())
                     .orElseThrow(() -> new CommentException("Book not found")));
             CommentResponseDTO commentResponseDTO;
-            User user = userRepository.findByUsername(jwtTokenProvider.getCurrentUser());
+            User user = userRepository.findByUsername(JwtTokenProvider.getCurrentUser());
             Comment comment = commentMapper.toEntity(commentRequestDTO);
-            comment.setUserId(user.getId());
+//            comment.setUserId(user.getId());
             comment = commentRepository.save(comment);
             commentResponseDTO = commentMapper.toDto(comment);
-            commentResponseDTO.setBook(bookResponseDTO);
+            commentResponseDTO.setBookId(bookResponseDTO.getId());
+            commentResponseDTO.setCreatedBy(user.getFirstName() + " " + user.getLastName());
             log.info("Comment added successfully");
-            evictCacheForComments(commentRequestDTO.getBookId());
+//            evictCacheForComments(commentRequestDTO.getBookId());
             LOG.info("Comment Added \t\t {}", gson.toJson(commentRequestDTO));
             return commentResponseDTO;
 
@@ -102,8 +97,8 @@ public class CommentServiceImpl implements CommentService {
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             CommentResponseDTO commentResponseDTO;
             Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentException("Comment not found"));
-            User user = userRepository.findByUsername(jwtTokenProvider.getCurrentUser());
-            if (comment.getUserId().equals(user.getId())) {
+            User user = userRepository.findByUsername(JwtTokenProvider.getCurrentUser());
+            if (comment.getCreatedBy().equals(JwtTokenProvider.getCurrentUser())) {
                 commentMapper.updateFromDto(commentRequestDTO, comment);
                 commentRepository.save(comment);
                 comment = commentRepository.findById(id).orElseThrow(() -> new CommentException("Comment not found"));
@@ -121,37 +116,32 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Cacheable(value = "comments", key = "#id")
     public List<CommentResponseDTO> getAllComments(Long id, HttpServletRequest httpServletRequest) {
         try {
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
-            LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
-            LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             String sql = ("""
-                    SELECT c.id                 AS id,
-                           c.text               AS text,
-                           c.created_at         AS created_at,
-                           c.created_by         AS created_by,
-                           b.id                 AS book_id,
-                           b.name               AS book_name,
-                           u.first_name         AS author_name,
-                           u.last_name          AS author_surname
-                    FROM comment c
-                        JOIN book b ON c.book_id = b.id
-                        JOIN users u ON b.user_id = u.id WHERE b.id=:id
+                            SELECT  c.id                 AS id,
+                                    c.text               AS text,
+                                    c.created_at         AS created_at,
+                                    b.id                 AS book_id,
+                                    b.name               AS book_name,
+                                    u.first_name         AS created_by
+
+                            FROM comment c
+                                 JOIN book b ON c.book_id = b.id
+                                 JOIN users u ON u.username = c.created_by
+                            WHERE   b.id = :id
+                            AND     c.created_by = :created_by
                     """);
             Query query = entityManager.createNativeQuery(sql);
             query.setParameter("id", id);
-            @SuppressWarnings("unchecked") List<Object[]> resultList = query.getResultList();
-
-            List<CommentResponseDTO> commentResponseDTOS = new ArrayList<>();
-            for (Object[] row : resultList) {
+            query.setParameter("created_by", JwtTokenProvider.getCurrentUser());
+            List<Object[]> rows = query.getResultList();
+            List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
+            for (Object[] row : rows) {
                 CommentResponseDTO commentResponseDTO = getCommentResponseDTO(row);
-                commentResponseDTOS.add(commentResponseDTO);
+                commentResponseDTOList.add(commentResponseDTO);
             }
-            LOG.info("Comments Getting \t\t {}", gson.toJson(commentResponseDTOS));
-            return commentResponseDTOS;
+            return commentResponseDTOList;
         } catch (Exception e) {
             LOG.error("Error getting comments {}", e.getMessage());
             throw new CommentException("Error getting comments");
@@ -167,8 +157,8 @@ public class CommentServiceImpl implements CommentService {
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             ResponseDTO responseDTO = new ResponseDTO();
             Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentException("Comment not found"));
-            User user = userRepository.findByUsername(jwtTokenProvider.getCurrentUser());
-            if (comment.getUserId().equals(user.getId())) {
+//            User user = userRepository.findByUsername(JwtTokenProvider.getCurrentUser());
+            if (comment.getCreatedBy().equals(JwtTokenProvider.getCurrentUser())) {
                 commentRepository.delete(comment);
                 responseDTO.setMessage("Comment deleted successfully");
                 LOG.info("Comment Deleted \t\t {}", gson.toJson(comment));
@@ -182,6 +172,7 @@ public class CommentServiceImpl implements CommentService {
             throw new CommentException("Error deleting comment");
         }
 
+
     }
 
     @CacheEvict(value = "comments", key = "#bookId")
@@ -189,3 +180,5 @@ public class CommentServiceImpl implements CommentService {
         LOG.info("Cache evicted for book id {}", bookId);
     }
 }
+
+

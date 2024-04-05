@@ -2,10 +2,7 @@ package uz.bookshop.domain.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import uz.bookshop.domain.audit.DateAudit;
 
@@ -20,6 +17,7 @@ import java.util.Set;
 @Entity
 @Table(name = "role")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class Role extends DateAudit implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)

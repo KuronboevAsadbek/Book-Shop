@@ -1,9 +1,6 @@
 package uz.bookshop.domain.dto.response_dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,6 +9,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BookResponseDTO implements Serializable {
 
     @Serial
@@ -20,6 +18,6 @@ public class BookResponseDTO implements Serializable {
     private String name;
     private Integer price;
     private Integer quantity;
-    private String authorName;
-    private String authorSurname;
+    private String writer;
+//    private String authorSurname;
 }

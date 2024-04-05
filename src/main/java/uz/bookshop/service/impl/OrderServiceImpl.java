@@ -1,6 +1,7 @@
 package uz.bookshop.service.impl;
 
 import com.google.gson.Gson;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import uz.bookshop.exception.CartException;
 import uz.bookshop.exception.OrderDetailsException;
 import uz.bookshop.exception.OrderException;
 import uz.bookshop.jwt_utils.JwtTokenProvider;
-import uz.bookshop.repository.BookRepository;
+import uz.bookshop.mapping.OrderMapper;
 import uz.bookshop.repository.OrderDetailsRepository;
 import uz.bookshop.repository.OrderRepository;
 import uz.bookshop.service.CartService;
@@ -34,20 +35,23 @@ public class OrderServiceImpl implements OrderService {
 
     private final static Logger LOG = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final OrderDetailsService orderDetailsService;
     private final OrderDetailsRepository orderDetailsRepository;
+    private final OrderDetailsServiceImpl orderDetailsServiceimpl;
     private final CartService cartService;
     private final Gson gson;
     private final NetworkDataService networkDataService;
-
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
-    public OrderResponseDTO createOrder(HttpServletRequest httpServletRequest) {
+    public ResponseDTO createOrder(HttpServletRequest httpServletRequest) {
         try {
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
+            ResponseDTO responseDTO = new ResponseDTO();
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
@@ -59,28 +63,33 @@ public class OrderServiceImpl implements OrderService {
             }
             Integer total = 0;
             for (OrderDetailsResponseDTO orderDetailsResponseDTO : detailsResponseDTO) {
-                total = orderDetailsResponseDTO.getTotalPrice()+total;
+                total = orderDetailsResponseDTO.getTotalPrice() + total;
             }
             orderResponseDTO.setTotalAmount(total);
             orderResponseDTO.setStatus(true);
             orderResponseDTO.setOrderDetails(detailsResponseDTO);
             Order order = new Order();
-            order.setUserId(orderResponseDTO.getUserId());
+//            order.setUserId(orderResponseDTO.getUserId());
             order.setTotalAmount(orderResponseDTO.getTotalAmount());
             order.setStatus(true);
             Order order1 = orderRepository.save(order);
+
+
             orderResponseDTO.setId(order1.getId());
             for (OrderDetailsResponseDTO orderDetailsResponseDTO : detailsResponseDTO) {
                 OrderDetails orderDetails = new OrderDetails();
-                orderDetails.setOrderId(order1.getId());
+                orderDetails.setOrder(order1);
                 orderDetails.setBookId(orderDetailsResponseDTO.getBook().getId());
                 orderDetails.setPrice(orderDetailsResponseDTO.getBook().getPrice());
-                orderDetails.setQuantity(orderDetailsResponseDTO.getQuantity());
+                orderDetails.setQuantity(orderDetailsServiceimpl.quantity(orderDetails));
                 orderDetailsRepository.save(orderDetails);
             }
+
+
             cartService.deleteCarts(httpServletRequest);
             LOG.info("Order Created \t\t {}", gson.toJson(orderResponseDTO));
-            return orderResponseDTO;
+            responseDTO.setMessage("Order created successfully");
+            return responseDTO;
 
         } catch (CartException e) {
             throw new CartException(e.getMessage());
@@ -93,9 +102,35 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseDTO deleteOrder() {
+    public OrderResponseDTO getLastOrder(HttpServletRequest httpServletRequest) {
         return null;
     }
 
+    @Override
+    public List<OrderResponseDTO> getAllOrders(HttpServletRequest httpServletRequest) {
+        try {
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
+            LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
+            LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
+            List<Order> orders = orderRepository.findByUsername(JwtTokenProvider.getCurrentUser());
+            List<OrderResponseDTO> orderResponseDTOS = orderMapper.toDto(orders);
+            for (OrderResponseDTO orderResponseDTO : orderResponseDTOS) {
+                List<OrderDetailsResponseDTO> orderDetailsResponseDTOS = orderDetailsService.getAllOrderDetails(
+                        httpServletRequest, orderResponseDTO.getId());
+                orderResponseDTO.setOrderDetails(orderDetailsResponseDTOS);
+
+            }
+            LOG.info("Orders \t\t {}", gson.toJson(orderResponseDTOS));
+            return orderResponseDTOS;
+        } catch (OrderDetailsException e) {
+            LOG.error("Error while getting orders", e);
+            throw new OrderDetailsException(e.getMessage());
+        } catch (Exception e) {
+            LOG.error("Error while getting orders", e);
+            throw new OrderException("Error while getting orders");
+        }
+    }
 
 }
+

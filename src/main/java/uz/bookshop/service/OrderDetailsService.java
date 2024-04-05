@@ -9,5 +9,9 @@ public interface OrderDetailsService {
 
     List<OrderDetailsResponseDTO> addOrderDetails(Long userId, HttpServletRequest httpServletRequest);
 
+    List<OrderDetailsResponseDTO> getAllOrderDetails(HttpServletRequest httpServletRequest, Long orderId);
+
+    OrderDetailsResponseDTO getOrderDetailsById(Long id, HttpServletRequest httpServletRequest);
+
 
 }

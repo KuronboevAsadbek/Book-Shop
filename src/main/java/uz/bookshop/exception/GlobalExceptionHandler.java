@@ -73,9 +73,20 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(UserStatisticsResponseException.class)
+    public ResponseEntity<Object> handleUserStatisticsException(UserStatisticsResponseException userStatisticsResponse) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorResponse
+                        .builder()
+                        .message(userStatisticsResponse.getMessage())
+                        .build()
+                );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ErrorResponse2> on(MethodArgumentNotValidException ex) {
-         ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         ErrorResponse2 errorResponse = ErrorResponse2.of(ResponseCode.REQUIRED_DATA_MISSING, ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS);
     }

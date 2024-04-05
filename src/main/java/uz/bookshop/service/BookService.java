@@ -19,4 +19,6 @@ public interface BookService {
     List<BookResponseDTO> getAllBooks(HttpServletRequest httpServletRequest);
 
     ResponseDTO deleteBook(Long id, HttpServletRequest httpServletRequest);
+
+    List<BookResponseDTO> getUserBooks(HttpServletRequest httpServletRequest);
 }

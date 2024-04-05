@@ -35,5 +35,4 @@ public class Cart implements Serializable {
     private Integer quantity;
 
 
-
 }

@@ -26,8 +26,8 @@ public class Order extends DateAudit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+//    @Column(name = "user_id")
+//    private Long userId;
 
     @Column(name = "total_amount")
     private Integer totalAmount;

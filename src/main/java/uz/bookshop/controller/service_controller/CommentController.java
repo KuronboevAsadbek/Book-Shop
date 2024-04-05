@@ -22,21 +22,22 @@ public class CommentController {
     private final CommentService commentService;
 
 
-    @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @PostMapping(CREATE)
     public ResponseEntity<CommentResponseDTO> addComment(@RequestBody CommentRequestDTO commentRequestDTO,
                                                          HttpServletRequest servletRequest) {
         return ResponseEntity.ok(commentService.addComment(commentRequestDTO, servletRequest));
     }
 
-    @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @GetMapping(GET_ALL)
     public ResponseEntity<List<CommentResponseDTO>> getAllCommentByBookId(@RequestParam Long bookId,
                                                                           HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(commentService.getAllComments(bookId, httpServletRequest));
     }
 
-    @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
+
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @PutMapping(UPDATE)
     public ResponseEntity<CommentResponseDTO> editComment(@RequestParam Long id,
                                                           @RequestBody CommentRequestDTO commentRequestDTO,
@@ -44,7 +45,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.editComment(id, commentRequestDTO, httpServletRequest));
     }
 
-    @PreAuthorize("hasAuthority('CAN_ADD_COMMENT')")
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
     @DeleteMapping(DELETE)
     public ResponseEntity<ResponseDTO> deleteComment(@PathVariable Long id, HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(commentService.deleteComment(id, httpServletRequest));

@@ -1,9 +1,7 @@
 package uz.bookshop.domain.dto.response_dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Id;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,8 +9,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OrderResponseDTO {
 
+    @Id
     private Long id;
     private Long userId;
     private Integer totalAmount;

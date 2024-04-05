@@ -17,7 +17,6 @@ import uz.bookshop.domain.dto.response_dto.ResponseDTO;
 import uz.bookshop.domain.dto.response_dto.Total;
 import uz.bookshop.domain.model.Book;
 import uz.bookshop.domain.model.Cart;
-import uz.bookshop.domain.model.User;
 import uz.bookshop.exception.CartException;
 import uz.bookshop.jwt_utils.JwtTokenProvider;
 import uz.bookshop.repository.BookRepository;
@@ -43,24 +42,34 @@ public class CartServiceImp implements CartService {
     private final Gson gson;
     private final NetworkDataService networkDataService;
 
+    private static CartResponseDTO getCartResponseDTO(Cart cart, Book book) {
+        Total total = new Total();
+        CartResponseDTO cartResponseDTO1 = new CartResponseDTO();
+        cartResponseDTO1.setAuthorName(book.getWriter());
+        cartResponseDTO1.setBookId(cart.getBookId());
+        cartResponseDTO1.setQuantity(cart.getQuantity());
+        cartResponseDTO1.setTotalAmount(cart.getQuantity() * book.getPrice());
+        cartResponseDTO1.setAmount(book.getPrice());
+        cartResponseDTO1.setAvailable(book.getQuantity() - cart.getQuantity());
+        total.setTotalAmountAllBooks(cart.getQuantity() * book.getPrice());
+        return cartResponseDTO1;
+    }
 
     @Override
     public ResponseDTO addToBasket(CartRequestDTO cartRequestDTO, HttpServletRequest httpServletRequest) {
         try {
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
-
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             ResponseDTO responseDTO = new ResponseDTO();
             Long bookId = cartRequestDTO.getBookId();
             int quantityToAdd = cartRequestDTO.getQuantity();
 
-
             Book book = bookRepository.findById(bookId).orElseThrow(() ->
                     new CartException("Book not found"));
 
-            String cartKey = "cart: " + jwtTokenProvider.getCurrentUser();
+            String cartKey = "cart: " + JwtTokenProvider.getCurrentUser();
 
             // Retrieve the list of items in the cart from Redis
             List<Cart> inCart = getAllCarts(cartKey);
@@ -103,7 +112,7 @@ public class CartServiceImp implements CartService {
             return responseDTO;
         } catch (Exception e) {
             LOG.error("Error while adding to cart{}", e.getMessage());
-            throw new CartException("Error getting all carts");
+            throw new CartException("Error while adding to cart");
         }
     }
 
@@ -113,21 +122,21 @@ public class CartServiceImp implements CartService {
         try {
             Total total = new Total();
             Integer totalAmountAllBooks = 0;
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             List<CartResponseDTO> cartResponseDTO = new ArrayList<>();
-            String username = jwtTokenProvider.getCurrentUser();
+            String username = JwtTokenProvider.getCurrentUser();
             String cartKey = "cart: " + username;
             List<Cart> carts = redisTemplate.opsForValue().get(cartKey);
             assert carts != null;
             for (Cart cart : carts) {
                 Book book = bookRepository.findById(cart.getBookId()).orElseThrow(() ->
                         new CartException("Book not found"));
-                User user = userRepository.findById(book.getUserId()).orElseThrow(() ->
-                        new CartException("Author not found"));
-                CartResponseDTO cartResponseDTO1 = getCartResponseDTO(cart, user, book);
+//                User user = userRepository.findById(book.getUserId()).orElseThrow(() ->
+//                        new CartException("Author not found"));
+                CartResponseDTO cartResponseDTO1 = getCartResponseDTO(cart, book);
                 cartResponseDTO.add(cartResponseDTO1);
                 totalAmountAllBooks += cartResponseDTO1.getTotalAmount();
                 total.setTotalAmountAllBooks(totalAmountAllBooks);
@@ -145,19 +154,23 @@ public class CartServiceImp implements CartService {
     @Override
     public void addOneOrMinusOne(PlusMinusRequest plusMinusRequest, HttpServletRequest httpServletRequest) {
         try {
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             Long bookId = plusMinusRequest.getBookId();
             Book book = bookRepository.findById(bookId).orElseThrow(() ->
                     new CartException("Book not found"));
             int plusOrMinus = plusMinusRequest.getPlusOrMinus();
-            String username = jwtTokenProvider.getCurrentUser();
+            String username = JwtTokenProvider.getCurrentUser();
             String cartKey = "cart: " + username;
             List<Cart> carts = getAllCarts(cartKey);
             assert carts != null;
             Optional<Cart> cart = carts.stream().filter(cart1 -> cart1.getBookId().equals(bookId)).findFirst();
+            if (book.getQuantity() == 0) {
+                LOG.error("Book is out of stock");
+                throw new CartException("Book is out of stock");
+            }
             if (cart.isPresent()) {
                 Cart cart1 = cart.get();
                 if (plusOrMinus > 0 && cart1.getQuantity() < book.getQuantity()) {
@@ -183,11 +196,11 @@ public class CartServiceImp implements CartService {
     @Transactional
     public ResponseDTO deleteCarts(HttpServletRequest httpServletRequest) {
         try {
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
-            String username = jwtTokenProvider.getCurrentUser();
+            String username = JwtTokenProvider.getCurrentUser();
             String cartKey = "cart: " + username;
             redisTemplate.delete(cartKey);
             LOG.info("Cart Deleted");
@@ -201,11 +214,11 @@ public class CartServiceImp implements CartService {
     @Override
     public ResponseDTO deleteOneCart(Long id, HttpServletRequest httpServletRequest) {
         try {
-            String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
-            String ClientIP = networkDataService.getRemoteUserInfo(httpServletRequest);
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
-            String username = jwtTokenProvider.getCurrentUser();
+            String username = JwtTokenProvider.getCurrentUser();
             String cartKey = "cart: " + username;
             List<Cart> carts = getAllCarts(cartKey);
             assert carts != null;
@@ -222,25 +235,12 @@ public class CartServiceImp implements CartService {
 
     public List<Cart> getAllCarts(String cartKey) {
         try {
-            LOG.info("Getting all carts");
+
             return redisTemplate.opsForValue().get(cartKey);
         } catch (Exception e) {
             LOG.error("Error while getting all carts{}", e.getMessage());
             throw new CartException("Error while getting all carts");
         }
 
-    }
-
-    private static CartResponseDTO getCartResponseDTO(Cart cart, User user, Book book) {
-        Total total = new Total();
-        CartResponseDTO cartResponseDTO1 = new CartResponseDTO();
-        cartResponseDTO1.setAuthorName(user.getFirstName() + " " + user.getLastName());
-        cartResponseDTO1.setBookId(cart.getBookId());
-        cartResponseDTO1.setQuantity(cart.getQuantity());
-        cartResponseDTO1.setTotalAmount(cart.getQuantity() * book.getPrice());
-        cartResponseDTO1.setAmount(book.getPrice());
-        cartResponseDTO1.setAvailable(book.getQuantity() - cart.getQuantity());
-        total.setTotalAmountAllBooks(cart.getQuantity() * book.getPrice());
-        return cartResponseDTO1;
     }
 }
