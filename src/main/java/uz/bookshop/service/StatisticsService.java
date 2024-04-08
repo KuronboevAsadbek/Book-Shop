@@ -1,6 +1,7 @@
 package uz.bookshop.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.MultiValueMap;
 import uz.bookshop.domain.dto.response_dto.forStatistics.ActiveUserStatistics;
 import uz.bookshop.domain.dto.response_dto.forStatistics.BooksStatisticsResponse;
 import uz.bookshop.domain.dto.response_dto.forStatistics.PopularBookStatistics;
@@ -19,7 +20,7 @@ public interface StatisticsService {
 
     List<BooksStatisticsResponse> booksStatistics();
 
-    List<ActiveUserStatistics> activeUsersStatistics(HttpServletRequest httpServletRequest);
+    List<ActiveUserStatistics> activeUsersStatistics(HttpServletRequest httpServletRequest, MultiValueMap<String, String> queryParams);
 
 
 }

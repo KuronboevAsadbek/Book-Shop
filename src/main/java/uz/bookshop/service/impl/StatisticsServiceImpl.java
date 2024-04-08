@@ -9,13 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import uz.bookshop.config.network.NetworkDataService;
 import uz.bookshop.domain.dto.response_dto.forStatistics.ActiveUserStatistics;
 import uz.bookshop.domain.dto.response_dto.forStatistics.BooksStatisticsResponse;
 import uz.bookshop.domain.dto.response_dto.forStatistics.PopularBookStatistics;
 import uz.bookshop.domain.dto.response_dto.forStatistics.UserStatisticsResponse;
 import uz.bookshop.exception.UserStatisticsResponseException;
-import uz.bookshop.jwt_utils.JwtTokenProvider;
 import uz.bookshop.service.StatisticsService;
 
 import java.text.SimpleDateFormat;
@@ -33,14 +33,6 @@ public class StatisticsServiceImpl implements StatisticsService {
     private final EntityManager entityManager;
     private final Gson gson;
     private final NetworkDataService networkDataService;
-
-    private static ActiveUserStatistics getActiveUserStatistics(Object[] row) {
-        String name = (String) row[0];
-        int bookCount = ((Number) row[1]).intValue();
-        Integer totalAmount = (Integer) row[2];
-        int commentCount = ((Number) row[3]).intValue();
-        return new ActiveUserStatistics(name, bookCount, totalAmount, commentCount);
-    }
 
     @Override
     public List<UserStatisticsResponse> lastWeekRegisteredUsers(HttpServletRequest httpServletRequest) {
@@ -175,7 +167,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public List<ActiveUserStatistics> activeUsersStatistics(HttpServletRequest httpServletRequest) {
+    public List<ActiveUserStatistics> activeUsersStatistics(HttpServletRequest httpServletRequest, MultiValueMap<String, String> queryParams) {
         try {
             String clientIP = networkDataService.getClientIPv4Address(httpServletRequest);
             String clientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
@@ -183,44 +175,58 @@ public class StatisticsServiceImpl implements StatisticsService {
             LOG.info("Client IP: \t\t {}", gson.toJson(clientIP));
 
             String sql = ("""
+                        WITH orders AS (
                         SELECT
-                            u.first_name AS name,
-                            COALESCE(orders.bookCount, 0) AS bookCount,
-                            COALESCE(orders.totalAmount, 0) AS totalAmount,
-                            COALESCE(comments.commentCount, 0) AS commentCount
+                            od.created_by,
+                            SUM(od.quantity) AS bookCount,
+                            SUM(od.price * od.quantity) AS totalAmount
                         FROM
-                            users u
-                                LEFT JOIN
-                            (SELECT
-                                 od.created_by,
-                                 SUM(od.quantity) AS bookCount,
-                                 SUM(od.price * od.quantity) AS totalAmount
-                             FROM
-                                 order_details od
-                             GROUP BY
-                                 od.created_by
-                            ) AS orders ON u.username = orders.created_by
-                                LEFT JOIN
-                            (SELECT
-                                 c.created_by,
-                                 COUNT(*) AS commentCount
-                             FROM
-                                 comment c
-                             GROUP BY
-                                 c.created_by
-                            ) AS comments ON u.username = comments.created_by
-                        WHERE
-                            u.username = :username
-                        ORDER BY
-                            COALESCE(orders.bookCount, 0) DESC;         
+                            order_details od
+                        GROUP BY
+                            od.created_by
+                    ),
+                    comments AS (
+                        SELECT
+                            c.created_by,
+                            COUNT(*) AS comment_count
+                        FROM
+                            comment c
+                        GROUP BY
+                            c.created_by
+                    )
+                    SELECT
+                        u.id AS id,
+                        u.first_name AS name,
+                        COALESCE(orders.bookCount, 0) AS bookCount,
+                        COALESCE(orders.totalAmount, 0) AS totalAmount,
+                        COALESCE(comments.comment_count, 0) AS commentCount
+                    FROM
+                        users u
+                    LEFT JOIN orders ON u.username = orders.created_by
+                    LEFT JOIN comments ON u.username = comments.created_by
                     """);
+            sql = sortQuery(sql, queryParams);
             Query query = entityManager.createNativeQuery(sql, ActiveUserStatistics.class);
-
-            return null;
+            List<ActiveUserStatistics> resultList = query.getResultList();
+            return resultList;
 
         } catch (Exception e) {
             LOG.error("Error in activeUsersStatistics: {}", e.getMessage());
             throw new UserStatisticsResponseException("Error in activeUsersStatistics: " + e.getMessage());
         }
+    }
+
+    private String sortQuery(String sql, MultiValueMap<String, String> queryParams) {
+        if (queryParams.containsKey("sort")) {
+            String sort = queryParams.getFirst("sort");
+            assert sort != null;
+            switch (sort) {
+                case "price" -> sql += " ORDER BY totalAmount DESC";
+                case "bookCount" -> sql += " ORDER BY bookCount DESC";
+                case "commentCount" -> sql += " ORDER BY commentCount DESC";
+                case "id" -> sql += " ORDER BY id DESC";
+            }
+        }
+        return sql;
     }
 }

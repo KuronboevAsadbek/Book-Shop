@@ -8,19 +8,13 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import uz.bookshop.domain.audit.DateAudit;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Comment extends DateAudit implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 4948864340503628694L;
+public class Comment extends DateAudit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

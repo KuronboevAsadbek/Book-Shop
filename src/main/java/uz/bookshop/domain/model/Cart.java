@@ -16,7 +16,6 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Cart implements Serializable {
 
     @Serial

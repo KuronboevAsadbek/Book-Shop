@@ -25,7 +25,7 @@ public class SuperAdminController {
 
     @PostMapping(REGISTER)
     @PreAuthorize("hasAuthority('FULL_ACCESS')")
-    public ResponseEntity<UserResponseDTO> registerAnyRole(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserResponseDTO> register(@RequestBody UserRequestDto userRequestDto) {
         return ResponseEntity.ok(userService.createUser(userRequestDto));
     }
 

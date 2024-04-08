@@ -21,6 +21,7 @@ import uz.bookshop.exception.UserException;
 import uz.bookshop.mapping.RoleMapper;
 import uz.bookshop.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
@@ -77,14 +78,14 @@ public class JwtTokenProvider {
     }
 
     private String generateToken(User user) {
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityMilliSecond);
+        Instant now = Instant.now();
+        Instant validity = now.plusMillis(validityMilliSecond);
         Claims claims = Jwts.claims().setSubject(user.getUsername());
         claims.put("roles", user.getRoles());
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(validity)
+                .setIssuedAt(Date.from(now))
+                .setExpiration(Date.from(validity))
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
