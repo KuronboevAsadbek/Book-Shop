@@ -27,6 +27,7 @@ import uz.bookshop.repository.CommentRepository;
 import uz.bookshop.repository.UserRepository;
 import uz.bookshop.service.CommentService;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
         String createdAt = row[2].toString();
 
 
+
         BookResponseDTO bookResponseDTO = new BookResponseDTO(bookId, bookName, null, null, createdBy);
         return new CommentResponseDTO(commentId, commentText, bookId, bookName, createdAt, createdBy);
     }
@@ -74,6 +76,7 @@ public class CommentServiceImpl implements CommentService {
 //            comment.setUserId(user.getId());
             comment = commentRepository.save(comment);
             commentResponseDTO = commentMapper.toDto(comment);
+            commentResponseDTO.setBookName(bookResponseDTO.getName());
             commentResponseDTO.setBookId(bookResponseDTO.getId());
             commentResponseDTO.setCreatedBy(user.getFirstName() + " " + user.getLastName());
             log.info("Comment added successfully");
@@ -132,7 +135,7 @@ public class CommentServiceImpl implements CommentService {
                             WHERE   b.id = :id
                             AND     c.created_by = :created_by
                     """);
-            Query query = entityManager.createNativeQuery(sql);
+            Query query = entityManager.createNativeQuery(sql, CommentResponseDTO.class);
             query.setParameter("id", id);
             query.setParameter("created_by", JwtTokenProvider.getCurrentUser());
             List<Object[]> rows = query.getResultList();
@@ -141,6 +144,8 @@ public class CommentServiceImpl implements CommentService {
                 CommentResponseDTO commentResponseDTO = getCommentResponseDTO(row);
                 commentResponseDTOList.add(commentResponseDTO);
             }
+
+
             return commentResponseDTOList;
         } catch (Exception e) {
             LOG.error("Error getting comments {}", e.getMessage());

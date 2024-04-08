@@ -18,7 +18,7 @@ public interface StatisticsService {
 
     List<PopularBookStatistics> popularBooksStatistics(HttpServletRequest httpServletRequest);
 
-    List<BooksStatisticsResponse> booksStatistics();
+    List<BooksStatisticsResponse> booksStatistics(HttpServletRequest httpServletRequest);
 
     List<ActiveUserStatistics> activeUsersStatistics(HttpServletRequest httpServletRequest, MultiValueMap<String, String> queryParams);
 

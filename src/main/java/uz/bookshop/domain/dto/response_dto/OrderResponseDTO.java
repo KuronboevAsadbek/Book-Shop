@@ -14,7 +14,7 @@ public class OrderResponseDTO {
 
     @Id
     private Long id;
-    private Long userId;
+//    private Long userId;
     private Integer totalAmount;
     private Boolean status;
     private List<OrderDetailsResponseDTO> orderDetails;

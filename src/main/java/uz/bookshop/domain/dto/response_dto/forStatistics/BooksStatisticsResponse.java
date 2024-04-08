@@ -12,6 +12,6 @@ import lombok.Setter;
 public class BooksStatisticsResponse {
 
     private String bookName;
-    private int orderCount;
-    private int commentCount;
+    private Long orderCount;
+    private Long commentCount;
 }

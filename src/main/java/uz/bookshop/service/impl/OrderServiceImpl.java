@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             OrderResponseDTO orderResponseDTO = new OrderResponseDTO();
-            orderResponseDTO.setUserId(jwtTokenProvider.getCurrentUserId());
+//            orderResponseDTO.setUserId(jwtTokenProvider.getCurrentUserId());
             List<OrderDetailsResponseDTO> detailsResponseDTO = orderDetailsService.addOrderDetails(
                     jwtTokenProvider.getCurrentUserId(), httpServletRequest);
             if (detailsResponseDTO.isEmpty()) {

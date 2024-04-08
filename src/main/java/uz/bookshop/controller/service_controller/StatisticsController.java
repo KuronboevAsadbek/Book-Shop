@@ -43,8 +43,8 @@ public class StatisticsController {
 
     @PreAuthorize("hasAuthority('MANAGER_ACCESS')")
     @GetMapping(BOOK)
-    public ResponseEntity<?> getBooksStatistics() {
-        return ResponseEntity.ok(service.booksStatistics());
+    public ResponseEntity<?> getBooksStatistics(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(service.booksStatistics(httpServletRequest));
     }
 
     @PreAuthorize("hasAuthority('MANAGER_ACCESS')")

@@ -1,16 +1,24 @@
 package uz.bookshop.config;
 
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import uz.bookshop.domain.dto.request_dto.UserRequestDto;
+import uz.bookshop.domain.dto.response_dto.RoleResponseDTO;
+import uz.bookshop.domain.model.Permission;
+import uz.bookshop.domain.model.Role;
 import uz.bookshop.repository.RoleRepository;
 import uz.bookshop.service.UserService;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DatabaseMigration {
+public class DatabaseMigration{
     private final RoleRepository roleRepository;
     private final UserService userService;
     private final EntityManager entityManager;

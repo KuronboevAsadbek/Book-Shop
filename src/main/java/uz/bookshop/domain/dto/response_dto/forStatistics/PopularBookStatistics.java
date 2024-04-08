@@ -12,5 +12,5 @@ import lombok.Setter;
 public class PopularBookStatistics {
 
     private String bookName;
-    private int totalQuantity;
+    private Long totalQuantity;
 }
