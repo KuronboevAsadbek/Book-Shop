@@ -160,7 +160,8 @@ public class CommentServiceImpl implements CommentService {
             LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
             LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
             ResponseDTO responseDTO = new ResponseDTO();
-            Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentException("Comment not found"));
+            Comment comment = commentRepository.findById(id).orElseThrow(() ->
+                    new CommentException("Comment not found"));
 //            User user = userRepository.findByUsername(JwtTokenProvider.getCurrentUser());
             if (comment.getCreatedBy().equals(JwtTokenProvider.getCurrentUser())) {
                 commentRepository.delete(comment);

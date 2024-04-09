@@ -11,4 +11,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("select o from Order o where o.createdBy = :createdBy")
     List<Order> findByUsername(String createdBy);
+
+
+    Order findFirstByCreatedByOrderByCreatedAtDesc(String createdBy);
 }

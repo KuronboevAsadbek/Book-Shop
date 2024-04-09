@@ -31,6 +31,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders(httpServletRequest));
     }
 
+    @PreAuthorize("hasAuthority('USER_ACCESS')")
+    @GetMapping(GET_LAST)
+    public ResponseEntity<?> getLastOrder(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(orderService.getLastOrder(httpServletRequest));
+    }
+
 
 }
 

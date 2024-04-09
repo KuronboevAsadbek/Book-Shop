@@ -24,6 +24,7 @@ public class Endpoint {
     public static final String DELETE_CART = "/delete";
     public static final String GET_ONE = "/getOne/{id}";
     public static final String GET_ALL = "/getall";
+    public static final String GET_LAST = "/getLast";
     public static final String GET_USER_BOOKS = "/getUserBooks";
     public static final String ADD = "/add";
     public static final String CART = "/cart";

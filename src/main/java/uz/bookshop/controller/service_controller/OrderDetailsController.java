@@ -23,7 +23,8 @@ public class OrderDetailsController {
 
     @PreAuthorize("hasAuthority('USER_ACCESS')")
     @GetMapping(GET_ALL)
-    public ResponseEntity<?> getAllOrderDetails(HttpServletRequest httpServletRequest, @RequestParam("orderId") Long orderId) {
+    public ResponseEntity<?> getAllOrderDetails(HttpServletRequest httpServletRequest,
+                                                @RequestParam("orderId") Long orderId) {
         return ResponseEntity.ok(orderDetailsService.getAllOrderDetails(httpServletRequest, orderId));
     }
 }

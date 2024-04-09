@@ -88,7 +88,8 @@ public class UserServiceImpl implements UserService {
         if (Boolean.FALSE.equals(checkPassword(requestDto.getPassword()))) {
             throw new UserException(("Password is too short!"));
         }
-        User oldUser = userRepository.findById(requestDto.getId()).orElseThrow(() -> new UserException("User is not found"));
+        User oldUser = userRepository.findById(requestDto.getId()).orElseThrow(() ->
+                new UserException("User is not found"));
         User newUser = userMapper.toEntity(requestDto);
 
         userMapper.updateFromDto(requestDto, oldUser);
@@ -113,7 +114,8 @@ public class UserServiceImpl implements UserService {
         userRequestDto.setRoles(
                 Set.of(
                         roleMapper.toDto(
-                                roleRepository.findByName(roleName).orElseThrow(() -> new UserException("Role is not found"))
+                                roleRepository.findByName(roleName).orElseThrow(() -> new
+                                        UserException("Role is not found"))
                         )
                 )
         );

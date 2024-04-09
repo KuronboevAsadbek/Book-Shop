@@ -102,7 +102,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseDTO getLastOrder(HttpServletRequest httpServletRequest) {
-        return null;
+        try {
+            String ClientIP = networkDataService.getClientIPv4Address(httpServletRequest);
+            String ClientInfo = networkDataService.getRemoteUserInfo(httpServletRequest);
+            LOG.info("Client host : \t\t {}", gson.toJson(ClientInfo));
+            LOG.info("Client IP :  \t\t {}", gson.toJson(ClientIP));
+            Order order = orderRepository.findFirstByCreatedByOrderByCreatedAtDesc(JwtTokenProvider.getCurrentUser());
+            OrderResponseDTO orderResponseDTO = orderMapper.toDto(order);
+            List<OrderDetailsResponseDTO> orderDetailsResponseDTOS = orderDetailsService.getAllOrderDetails(
+                    httpServletRequest, orderResponseDTO.getId());
+            orderResponseDTO.setOrderDetails(orderDetailsResponseDTOS);
+            LOG.info("Last Order \t\t {}", gson.toJson(orderResponseDTO));
+            return orderResponseDTO;
+        } catch (OrderDetailsException e) {
+            LOG.error("Error while getting last order", e);
+            throw new OrderDetailsException(e.getMessage());
+        } catch (Exception e) {
+            LOG.error("Error while getting last order", e);
+            throw new OrderException("Error while getting last order");
+        }
     }
 
     @Override

@@ -10,4 +10,6 @@ import java.util.List;
 public interface OrderMapper {
 
     List<OrderResponseDTO> toDto(List<Order> orders);
+
+    OrderResponseDTO toDto(Order order);
 }

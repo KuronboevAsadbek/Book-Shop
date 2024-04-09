@@ -49,7 +49,8 @@ public class StatisticsController {
 
     @PreAuthorize("hasAuthority('MANAGER_ACCESS')")
     @GetMapping(ACTIVE_USERS)
-    public ResponseEntity<?> getActiveUsers(HttpServletRequest httpServletRequest, @RequestParam MultiValueMap<String, String> queryParams) {
+    public ResponseEntity<?> getActiveUsers(HttpServletRequest httpServletRequest,
+                                            @RequestParam MultiValueMap<String, String> queryParams) {
         return ResponseEntity.ok(service.activeUsersStatistics(httpServletRequest, queryParams));
     }
 

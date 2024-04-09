@@ -40,7 +40,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final NetworkDataService networkDataService;
 
     @NotNull
-    private static OrderDetailsResponseDTO getOrderDetailsResponseDTO(Cart cart1, Book book, BookResponseDTO bookResponseDTO) {
+    private static OrderDetailsResponseDTO getOrderDetailsResponseDTO(Cart cart1, Book book,
+                                                                      BookResponseDTO bookResponseDTO) {
         OrderDetails orderDetails = new OrderDetails();
         orderDetails.setBookId(book.getId());
         orderDetails.setPrice(book.getPrice());
@@ -73,7 +74,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
                 BookResponseDTO bookResponseDTO = bookMapper.toDto(book);
                 bookResponseDTO.setWriter(book.getWriter());
 //                bookResponseDTO.setAuthorSurname(bookAuthor.getLastName());
-                OrderDetailsResponseDTO orderDetailsResponseDTO = getOrderDetailsResponseDTO(cart1, book, bookResponseDTO);
+                OrderDetailsResponseDTO orderDetailsResponseDTO =
+                        getOrderDetailsResponseDTO(cart1, book, bookResponseDTO);
                 if (cart1.getQuantity() > book.getQuantity())
                     throw new OrderDetailsException("Book quantity is not enough");
                 orderDetailsResponseDTOS.add(orderDetailsResponseDTO);
@@ -135,7 +137,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         return null;
     }
 
-    public void updateBook(List<OrderDetailsResponseDTO> orderDetailsResponseDTOS, HttpServletRequest httpServletRequest,
+    public void updateBook(List<OrderDetailsResponseDTO> orderDetailsResponseDTOS,
+                           HttpServletRequest httpServletRequest,
                            List<Cart> cart) {
         try {
             String ClientInfo = networkDataService.getClientIPv4Address(httpServletRequest);
