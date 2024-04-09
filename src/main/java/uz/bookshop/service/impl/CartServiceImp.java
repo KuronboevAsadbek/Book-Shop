@@ -36,7 +36,6 @@ public class CartServiceImp implements CartService {
 
     private final static Logger LOG = LoggerFactory.getLogger(CartServiceImp.class);
     private final BookRepository bookRepository;
-    private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisTemplate<String, List<Cart>> redisTemplate;
     private final Gson gson;

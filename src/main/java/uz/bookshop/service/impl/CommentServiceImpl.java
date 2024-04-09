@@ -135,7 +135,7 @@ public class CommentServiceImpl implements CommentService {
                             WHERE   b.id = :id
                             AND     c.created_by = :created_by
                     """);
-            Query query = entityManager.createNativeQuery(sql, CommentResponseDTO.class);
+            Query query = entityManager.createNativeQuery(sql);
             query.setParameter("id", id);
             query.setParameter("created_by", JwtTokenProvider.getCurrentUser());
             List<Object[]> rows = query.getResultList();
@@ -144,8 +144,7 @@ public class CommentServiceImpl implements CommentService {
                 CommentResponseDTO commentResponseDTO = getCommentResponseDTO(row);
                 commentResponseDTOList.add(commentResponseDTO);
             }
-
-
+            LOG.info("Comments \t\t {}", gson.toJson(commentResponseDTOList));
             return commentResponseDTOList;
         } catch (Exception e) {
             LOG.error("Error getting comments {}", e.getMessage());

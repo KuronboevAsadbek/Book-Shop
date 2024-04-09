@@ -43,7 +43,6 @@ public class OrderServiceImpl implements OrderService {
     private final CartService cartService;
     private final Gson gson;
     private final NetworkDataService networkDataService;
-    private final EntityManager entityManager;
 
     @Override
     @Transactional

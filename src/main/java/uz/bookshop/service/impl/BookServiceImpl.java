@@ -29,9 +29,6 @@ public class BookServiceImpl implements BookService {
     private final static Logger LOG = LoggerFactory.getLogger(BookServiceImpl.class);
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final EntityManager entityManager;
     private final Gson gson;
     private final NetworkDataService networkDataService;
 

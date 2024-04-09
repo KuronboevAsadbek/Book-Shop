@@ -22,7 +22,6 @@ public class CommentResponseDTO implements Serializable {
     private static final long serialVersionUID = 7274043871477772215L;
 
 
-    @Id
     private Long id;
     private String text;
     private Long bookId;
