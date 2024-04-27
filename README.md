@@ -23,9 +23,7 @@ public class BookShopApplication {
     public static void main(String[] args) {
         SpringApplication.run(BookShopApplication.class, args);
     }
- /* SecurityContextHolder.getContext().getAuthentication().getName();
-            principal.getName();*/
-}
+
 ```
 
 ***You can get the services listed above in this table through the links***
